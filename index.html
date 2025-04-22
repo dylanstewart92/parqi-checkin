@@ -1,0 +1,103 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Parqi Check-In</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to right, #006b52, #00b270);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      color: white;
+    }
+    .container {
+      background: rgba(0, 0, 0, 0.75);
+      padding: 2rem;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+      box-shadow: 0 0 30px rgba(0,0,0,0.3);
+    }
+    .container h1 {
+      margin-bottom: 1rem;
+      color: white;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 0.8rem;
+      margin: 1rem 0;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+    }
+    button {
+      padding: 0.8rem 1.5rem;
+      font-size: 1rem;
+      border: none;
+      border-radius: 6px;
+      background-color: #00b270;
+      color: white;
+      cursor: pointer;
+      margin: 0.5rem;
+    }
+    button:hover {
+      background-color: #007e59;
+    }
+    #statusMsg {
+      margin-top: 1rem;
+      font-size: 0.95rem;
+      color: #00ffcc;
+    }
+    .logo {
+      width: 180px;
+      margin-bottom: 1.5rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <img src="Parqi_Logo_Transparent.png" alt="Parqi Logo" class="logo" />
+    <h1>Parking Check-In</h1>
+    <form id="checkinForm">
+      <input type="text" name="plate" placeholder="Enter license plate" required />
+      <div>
+        <button type="submit" name="action" value="checkin">Check In</button>
+        <button type="submit" name="action" value="checkout">Check Out</button>
+      </div>
+    </form>
+    <p id="statusMsg"></p>
+  </div>
+  <script>
+    const form = document.getElementById('checkinForm');
+    const statusMsg = document.getElementById('statusMsg');
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const plate = form.plate.value;
+      const action = e.submitter.value;
+      const url = 'https://script.google.com/macros/s/AKfycbx5c41af5_FcFd5J_4v03bSqvEq1x_LV2ZO9NipTrA6BmSgjr-cYUt09sVwBdWkFss/exec';
+
+      fetch(url, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `plate=${encodeURIComponent(plate)}&action=${encodeURIComponent(action)}`
+      }).then(() => {
+        statusMsg.textContent = `✔️ Successfully recorded your ${action === 'checkin' ? 'Check-In' : 'Check-Out'}.`;
+        form.reset();
+      }).catch(() => {
+        statusMsg.textContent = "❌ Something went wrong. Please try again.";
+      });
+    });
+  </script>
+</body>
+</html>
